@@ -5,7 +5,7 @@ sep=/
 srcs=$(wildcard src/*.cpp)
 all: print build start 
 build:
-	$(CXX) $(srcs) -o $(exec)
+	$(CXX) $(srcs) -o $(exec) -std=c++17
 start:$(exec)
 	$(exec)
 print:
