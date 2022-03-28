@@ -7,6 +7,7 @@
 	],
 	"settings": {
 		"files.associations": {
+			"make2": "make",
 			"iostream": "cpp",
 			"ostream": "cpp",
 			"array": "cpp",
@@ -68,6 +69,6 @@
 			"thread": "cpp",
 			"cinttypes": "cpp",
 			"typeinfo": "cpp"
-		}
+		},"terminal.integrated.defaultProfile.windows": "Command Prompt"
 	}
 }
