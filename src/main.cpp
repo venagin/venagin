@@ -1,104 +1,105 @@
-/* первый тип коментария должен заканчиваться на подобноый но обратный символ 
-(коментарий много строчный) */
-#include <iostream> 
-#include <filesystem>
-//main() - второй тип коментария 
-void test_operators();
-void test_filesystem();
-void test_pointers();
-void test_arrays();
-void test_statements();
+#undef UNICODE
+#include "windows.h"
+#include "stdio.h"
+#include "glad.h"
+
+
+LRESULT window_procedure(HWND windowhandle,UINT messageid,WPARAM wparam,LPARAM lparam);
 int main()
 {
-    ::test_statements();
-    //::test_operators();
-    //::test_filesystem();
-    //::test_pointers();
-    return 0;
-}
-void test_operators()
-{
-    std::cout<<(void*)test_operators<<std::endl;
-    std::cout<<(void*)test_pointers<<std::endl;
-    std::cout<<(void*)test_filesystem<<std::endl;
-    std::cout<<(void*)main<<std::endl;
-    const wchar_t*wstr=L"Привет Мир!";
-    std::wcout<<*wstr<<std::endl;
-}
-void test_filesystem()
-{
-    ::std::cout <<"my first program"<<std::endl;
-    ::std::cout <<std::filesystem::current_path()<<std::endl;
-    std::filesystem::current_path("C://");
-    ::std::cout <<std::filesystem::current_path()<<std::endl;
-    return;
-}
-void test_pointers() 
-{
-    int mino=78; 
-    ::std::cout<<"--mino==78="<<(--mino==78)<<'\n';
-    mino++;
-    ::std::cout<<"mino--==78="<<(mino--==78)<<'\n';
-    mino=13654;
-    int* ptr=&mino;
-    ::std::cout<<&mino<<std::endl;
-    ::std::cout<<*ptr<<std::endl;
-    *ptr=635;
-    ::std::cout<<*ptr;
-}
-void test_arrays()
-{
-    int arr[797];
-    int* ptr=arr;
-    arr[632]=54;
-    ptr[702]=389;
-}
-void test_statements()
-{
-    if (false)
+    printf("%sWorld!%c","Hello ",'\n');
+    WNDCLASS cls=
     {
-        std::cout<<"This is inside of if(true)"<<std::endl;
-    }
-    else if (true)
-    {
-        std::cout<<"This is inside of else if(false)"<<std::endl;
-    }
-    else 
-    {
-        std::cout<<"This is inside of else"<<std::endl;
-    }
-    bool flag=true;
-    while (flag) //while (eng)- пока "в то время как" 
-    {
-        flag=false;
-        ::std::cout<<"While"<<std::endl;
-        //break;
-    }
-    do 
-    {
-        flag=false;
-        ::std::cout<<"Do while"<<std::endl;
-    } while (flag);
-    // Первый часть - объявление переменных; Вторая часть - условие; Третья часть - что делать после каждой итерации(выполнение кода в скобочках "{}");
-    for (int i = 0; ++i <= 10;)
-    {
-        ::std::cout<<i<<std::endl;
-    }
-    int exp=1;
-    switch (exp)
-    {
-    case 0: //case(eng) -случай
-        ::std::cout<<"case zero"<<std::endl;
-        ::std::cout<<"case zero"<<std::endl;
-        break; //break - закончить (обязательно в случае использования case для того чтобы закончить исполнение)
-    
-    default:
-        break;
+        .style=CS_OWNDC | CS_VREDRAW | CS_HREDRAW,
+        .lpfnWndProc=window_procedure,
+        .cbClsExtra=0,
+        .cbWndExtra=0,
+        .hInstance=GetModuleHandle(NULL),
+        .hIcon=0,
+        .hCursor=0,
+        .hbrBackground=0,
+        .lpszMenuName="",
+        .lpszClassName="window"
+        
+    };
+    //cls.hbrBackground=cls.hCursor=cls.hIcon=NULL; 
+    RegisterClass(&cls);
 
-    case 1:
-        ::std::cout<<"case one"<<std::endl;
-        ::std::cout<<"case one"<<std::endl;
-        break; //break - закончить (обязательно в случае использования case для того чтобы закончить исполнение)
+    HWND window=CreateWindow("window","Hello World!",WS_OVERLAPPED|WS_CAPTION|WS_OVERLAPPEDWINDOW,0,0,512,512,NULL,NULL,cls.hInstance,NULL);
+    ShowWindow(window,SW_SHOWDEFAULT);
+    UpdateWindow(window);
+
+    HDC device=GetWindowDC(window);
+    PIXELFORMATDESCRIPTOR format_struct = 
+    {
+        .nSize = sizeof(PIXELFORMATDESCRIPTOR),
+        .nVersion = 1,
+        .dwFlags = PFD_DRAW_TO_WINDOW | PFD_DOUBLEBUFFER | PFD_SUPPORT_OPENGL,
+        .iPixelType = PFD_TYPE_RGBA,
+        .cColorBits = 24,
+        .cRedBits = 0, .cRedShift = 0,
+        .cGreenBits = 0, .cGreenShift = 0,
+        .cBlueBits = 0, .cBlueShift = 0,
+        .cAlphaBits = 0, .cAlphaShift = 0,
+        .cAccumBits = 0,
+        .cAccumRedBits = 0, .cAccumGreenBits = 0, .cAccumBlueBits = 0, .cAccumAlphaBits = 0,
+        .cDepthBits = 0, .cStencilBits = 0,
+        .cAuxBuffers = 0,
+        .iLayerType = PFD_MAIN_PLANE,
+        .bReserved = 0,
+        .dwLayerMask = 0, .dwVisibleMask = 0, .dwDamageMask = 0
+
+    };
+
+    int formatindex=ChoosePixelFormat(device,&format_struct);
+    if (formatindex!=0){
+
+        SetPixelFormat(device,formatindex,&format_struct);
+        DescribePixelFormat(device,formatindex,format_struct.nSize,&format_struct);
+        HGLRC opengl=wglCreateContext(device);
+        wglMakeCurrent(device,opengl);
+        gladLoadGL();
+        printf("openglversion=%s\n",glGetString(GL_VERSION));
+        printf("shadingversion=%s\n",glGetString(GL_SHADING_LANGUAGE_VERSION));
+
+        MSG message;
+        glClearColor(0.0f,0.0f,0.0f,0.0f);
+        while(GetMessage(&message,window,0,0)>0)
+        {
+        DispatchMessage(&message);//отсылает сообщение в window_procedure
+        glClear(GL_COLOR_BUFFER_BIT);
+        glBegin(GL_TRIANGLES);
+        glVertex2f(-1.0f,-1.0f);
+        glColor3f(1.0f,0.0f,0.0f);
+        glVertex2f(-0.0f,+1.0f);
+        glColor3f(0.0f,1.0f,0.0f);
+        glVertex2f(+1.0f,-1.0f);
+        glColor3f(0.0f,0.0f,1.f);
+        
+        glEnd();
+        SwapBuffers(device);
+        }
+        
     }
-    
+    DestroyWindow(window);
+    UnregisterClass(cls.lpszClassName,cls.hInstance);
+    return 0;
+
 }
+//(В window_procedure)Первый аргумент это id нашего окна, второй аргумент это сообщение которое отослали, данные про сообщения
+LRESULT window_procedure(HWND windowhandle,UINT messageid,WPARAM wparam,LPARAM lparam)
+{
+    switch(messageid)
+    {
+    case WM_DESTROY: // когда нажат красный крест
+    printf("terso%c",'\n');
+    PostQuitMessage(0); // отправить сообщение для выхода - GetMessage вернет 0
+    break;
+    case WM_KEYDOWN:
+    if(wparam==VK_ESCAPE){
+
+    PostQuitMessage(0);
+    }
+    default:return DefWindowProc(windowhandle, messageid, wparam, lparam);
+    }
+}  
