@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "command": "",
+            "cwd": "${workspaceFolder}",
+            "name": "Launch",
+            "preLaunchTask": "gmake",
+            "request": "launch",
+            "type": "cppdbg",
+            "program": "${workspaceFolder}/bin/unit.exe",
+            "MIMode": "gdb",
+        }
+    ]
+}
