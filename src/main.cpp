@@ -1,13 +1,12 @@
-#include "triangle.hpp"
+#include "window.hpp"
 
 
 
 int main()
 {
     {
-        test_triangle();
+        test_window();
     }
     
     return 0;
-
 }

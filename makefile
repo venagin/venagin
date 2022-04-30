@@ -1,4 +1,4 @@
-NAME:=venagin_script
+NAME:venagin_script
 COMPILER:=g++
 LINKER:=g++
 SRC:=src
@@ -8,16 +8,16 @@ EXEC:=bin/unit.exe
 SRCS:=$(wildcard $(SRC)/*.cpp)
 OBJS:=$(patsubst $(SRC)/%.cpp,$(OBJ)/%.obj,$(SRCS))
 CFLAGS:=-std=c++17
-all: build start 
+LFLAGS:=-lopengl32 -lgdi32
+all: build start
 build:$(OBJS)
-	$(LINKER) $(OBJS) -o $(EXEC) -lopengl32 -lgdi32
+		$(LINKER) $(OBJS) -o $(EXEC) $(LFLAGS)
 start:build
-	$(EXEC)
+		$(EXEC)
 print:
-	$(info $(SRCS))
-	$(info $(OBJS))
-	dir
+		$(info $(SRCS))
+		$(info $(OBJS))
 $(OBJ)/%.obj: $(SRC)/%.cpp
-	$(COMPILER) -c $< -o $@ $(CFLAGS) 
+		$(COMPILER) -c $< -o $@ $(CFLAGS)
 # g++ -c <путь до main.cpp>(в нашем примере) "Вместо $< подставляется $(SRC)/%.cpp (т.е. то что справа)"
 # -O <путь до соответсвующего объектного файла.obj> "Вместо $@ подставяется $(OBJ)/%.obj (т.е. то что слева)"
